@@ -19,12 +19,10 @@ class UserController {
             .then(user=>{
                 res.json({msg: "success!", user: user});
             })
-            .catch(err=>{
-                res.json({msg: "ERROR!", err: err})
-            })
+            .catch(err=> res.json(err));
     }
 
-    getOneUser ()
+    // getOneUser ()
 }
 
 module.exports = new UserController();
