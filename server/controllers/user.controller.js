@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 
 class UserController {
+
     // admin controller features for getting all users
     getAllUsers = (req,res)=>{
         User.find()
@@ -9,6 +10,17 @@ class UserController {
             })
             .catch(err=>{
                 res.json({error: err})
+            })
+    }
+
+
+    register = (req,res) =>{
+        User.create(req.body)
+            .then(user=>{
+                res.json({msg: "success!", user: user});
+            })
+            .catch(err=>{
+                res.json({msg: "ERROR!", err: err})
             })
     }
 
