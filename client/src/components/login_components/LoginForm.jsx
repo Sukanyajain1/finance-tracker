@@ -23,7 +23,7 @@ const LoginForm = () => {
                 if(res.data.error){
                     setloginFormErrors(res.data.error)
                 }else{
-                    history.push("/dashboard")
+                    history.push("tracker/dashboard")
                 }
             })
             .catch(err=>console.log("err when logging in: ", err))

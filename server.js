@@ -7,18 +7,21 @@ const cookieParser = require('cookie-parser'); //so that the server can understa
 const app = express(); 
 const port = 8000;
 
-app.use(express.json());
-app.use(express.urlencoded({extended:true})) 
+app.use(express.json());  //parse requests of content-type  -  application/json
+app.use(express.urlencoded({extended:true}));  //parse requests of content-type  -  application/x-www-form-urlendcoded
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(cookieParser());
 
 
 
 require("./server/config/mongoose.config");
+require("./server/config/authJwt.config");
 
 
-
+// ALL THE ROUTES
 require('./server/routes/user.routes')(app);
+require('./server/routes/expense.routes')(app);
+require('./server/routes/expenseCategory.routes')(app);
 
-
+// SET PORT, LISTEN FOR REQUESTS
 app.listen(port, ()=> console.log(`<3 Hi, there! Listening on port: ${port}`));

@@ -24,6 +24,13 @@ const UserSchema = new mongoose.Schema ({
         required: [true, 'Password is required'],
         minlength: [8, 'Password must be 8 characters or longer'],
     },
+    roles: [
+        {
+        type: mongoose.Schema.Types.ObjectId, //this is my Role Type
+        ref: "Role" //this is the name of my role Model from the role.model.js
+        }
+    ],
+
 },{timestamps: true});
 
 
