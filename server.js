@@ -14,9 +14,11 @@ app.use(cookieParser());
 
 
 
-require("./server/config/mongoose.config");
+require("./server/config/mongoose.config"); //mongoose.connect to the MongoDB url with db name
 require("./server/config/authJwt.config");
 
+// // authController contains the initializer for the Roles (creating a new object for the user role and the admin role)
+// require("./server/controllers/auth.controller");
 
 // ALL THE ROUTES
 require('./server/routes/user.routes')(app);
