@@ -1,54 +1,92 @@
-import React, {useState} from 'react';
-import axios from 'axios';
-import { useHistory } from "react-router-dom";
+import React, {useState, useRef} from 'react';
+import { useHistory } from 'react-router-dom';
 
+import AuthService from "../../services/auth.service";
 
 const LoginForm = () => {
+    let history = useHistory();
+    let [formErrors, setFormErrors] = useState({})
 
-    let [email, setEmail] = useState("");
-    let [password, setPassword] = useState("");
 
-    let [loginformErrors, setloginFormErrors] = useState("")
+    const form = useRef();
+    const checkBtn = useRef();
 
-    const history = useHistory();
-    
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");    
 
-    const login = (e)=>{
+    const handleLogin = (e)=>{
         e.preventDefault();
-        //put the form info in an object (objectify it lol)
-        let formInfo = {email,password};
-        axios.post("http://localhost:8000/api/users/login", formInfo, {withCredentials:true})
-            .then(res=>{
-                console.log("response when logging in!", res)
-                if(res.data.error){
-                    setloginFormErrors(res.data.error)
-                }else{
-                    history.push("tracker/dashboard")
+
+        setMessage("");
+        setLoading(true);
+
+        form.current.validateAll();
+
+        if (checkBtn.current.context._errors.length === 0) {
+            AuthService.login(email, password).then(
+                () => {
+                    history.push("/profile");
+                },
+                (error) => {
+                    setFormErrors(error.errors);
+                    const resMessage =
+                        (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+            
+                    setLoading(false);
+                    setMessage(resMessage);
                 }
-            })
-            .catch(err=>console.log("err when logging in: ", err))
-    }
+            );
+            } else {
+            setLoading(false);
+            }
+        };
 
     return (
-        <div>
-            <h3>Login</h3> 
-            <form onSubmit={login}>
-                <div className="form-group">
-                    <label htmlFor="">Email</label>
-                    <input type="text" name="email" id="" className = 'form-control' onChange={(e)=>setEmail(e.target.value)} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="">Password</label>
-                    <input type="password" name="password" id="" className = 'form-control' onChange={(e)=>setPassword(e.target.value)} />
-                </div>
-                <p className="text-danger">{loginformErrors}</p>
-                
-                <input type="submit" value="Login" className="btn btn-secondary mt-3" />
-            </form>
+        <div className="col-md-12">
+            <div className="card card-container">
+                <img
+                    src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+                    alt="profile-img"
+                    className="profile-img-card"
+                    />
+                <h3>Login</h3> 
+                <form onSubmit={handleLogin}>
+                    <div className="form-group">
+                        <label htmlFor="">Email</label>
+                        <input type="text" name="email" id="" className = 'form-control' onChange={(e)=>setEmail(e.target.value)}/>
+                        <p className="text-danger">{formErrors.email?.message}</p>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="">Password</label>
+                        <input type="password" name="password" id="" className = 'form-control' onChange={(e)=>setPassword(e.target.value)}/>
+                        <p className="text-danger">{formErrors.password?.message}</p>
+                    </div>                    
+                    <div className="form-group">
+                        <button className="btn btn-primary btn-block" disabled={loading}>
+                        {loading && (
+                            <span className="spinner-border spinner-border-sm"></span>
+                        )}
+                        <span>Login</span>
+                        </button>
+                    </div>
+
+                    {message && (
+                        <div className="form-group">
+                        <div className="alert alert-danger" role="alert">
+                            {message}
+                        </div>
+                        </div>
+                    )}
+                </form>
+            </div>
         </div>
     );
 };
-
-LoginForm.propTypes = {};
 
 export default LoginForm;

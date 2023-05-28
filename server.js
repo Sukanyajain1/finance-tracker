@@ -22,6 +22,7 @@ require("./server/config/authJwt.config");
 
 // ALL THE ROUTES
 require('./server/routes/user.routes')(app);
+require('./server/routes/auth.routes')(app);
 require('./server/routes/expense.routes')(app);
 require('./server/routes/expenseCategory.routes')(app);
 
